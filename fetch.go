@@ -9,8 +9,8 @@ import (
 )
 
 var urls = []string{
-  "http://www.mocky.io/v2/57b722090f0000b70e0b7d0e",
-  "http://www.mocky.io/v2/57b722470f0000990e0b7d0f",
+  "http://app1.tillersystems.com/api/search",
+  "http://app2.tillersystems.com/api/search",
 }
 
 type HttpResponse struct {
@@ -20,7 +20,7 @@ type HttpResponse struct {
 }
 
 type Response struct {
-	Restaurant  string
+	Name  string
 }
 
 func asyncHttpGets(urls []string, qs string) []*HttpResponse {
