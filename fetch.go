@@ -23,14 +23,14 @@ type Response struct {
 	Restaurant  string
 }
 
-func asyncHttpGets(urls []string) []*HttpResponse {
+func asyncHttpGets(urls []string, qs string) []*HttpResponse {
   ch := make(chan *HttpResponse)
   responses := []*HttpResponse{}
   client := http.Client{}
   for _, url := range urls {
       go func(url string) {
-          // fmt.Printf("Fetching %s \n", url)
-          resp, err := client.Get(url)
+          fmt.Printf("Fetching %s \n", url + "?query=" + qs)
+          resp, err := client.Get(url + "?query=" + qs)
           ch <- &HttpResponse{url, resp, err}
           if err != nil && resp != nil && resp.StatusCode == http.StatusOK {
               resp.Body.Close()
@@ -65,9 +65,13 @@ func parseHttpResponse(result *HttpResponse, response *[]Response) {
 func main() {
 
   http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Println(r.URL.String())
+    r.ParseForm()
+    resto := r.Form.Get("r")
+
 	  combined := []Response{}
 
-	  results := asyncHttpGets(urls)
+	  results := asyncHttpGets(urls, resto)
 
 	  for _, result := range results {
 	      if result != nil && result.response != nil {
