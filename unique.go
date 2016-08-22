@@ -53,7 +53,7 @@ func unique (w http.ResponseWriter, r *http.Request) {
         parseHttpUniqueResponse(result, &response);
 
         response.Url = result.url
-
+fmt.Println(response.Response)
         combined.Response = combined.Response && response.Response;
     }
 
