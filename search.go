@@ -18,6 +18,8 @@ type searchResponse struct {
 }
 
 func search (w http.ResponseWriter, r *http.Request) {
+    defer r.Body.Close()
+    w.Header().Set("Access-Control-Allow-Origin", "*") 
     // fmt.Println(r.URL.String())
     // fmt.Println(r.URL.Path)
 
