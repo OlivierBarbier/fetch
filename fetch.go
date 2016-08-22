@@ -55,6 +55,11 @@ func main() {
     router.HandleFunc("/search", search)
     router.HandleFunc("/user-is-unique", unique)
 
+    router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { 
+        defer r.Body.Close()
+        w.Header().Set("Access-Control-Allow-Origin", "*")
+    })
+
     http.ListenAndServe(":8080", router)
 }
 
