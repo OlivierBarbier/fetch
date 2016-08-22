@@ -7,7 +7,7 @@ import (
 
 var urls = []string{
     "http://app1.tillersystems.com/api",
-    // "http://app2.tillersystems.com/api",    
+    "http://app2.tillersystems.com/api",    
 }
 
 type HttpResponse struct {
@@ -23,7 +23,7 @@ func main() {
     http.ListenAndServe(":8080", nil)
 }
 
-func asyncHttpGets(urls []string, qs string) []*HttpResponse {
+func asyncHttpGets(urls []string) []*HttpResponse {
     ch := make(chan *HttpResponse)
     responses := []*HttpResponse{}
     client := http.Client{}
@@ -31,7 +31,7 @@ func asyncHttpGets(urls []string, qs string) []*HttpResponse {
     for _, url := range urls {
         go func(url string) {
             // fmt.Printf("Fetching %s \n", url + "?query=" + qs)
-            resp, err := client.Get(url + "?query=" + qs)
+            resp, err := client.Get(url)
             ch <- &HttpResponse{url, resp, err}
             if err != nil && resp != nil && resp.StatusCode == http.StatusOK {
                 resp.Body.Close()

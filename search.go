@@ -23,18 +23,18 @@ func search (w http.ResponseWriter, r *http.Request) {
 
     r.ParseForm()
 
-    resto := r.Form.Get("r")
+    // resto := r.Form.Get("r")
 
     combined := []searchResponse{}
 
     var u []string;
 
 	for _, url := range urls {
-	    u = append(u, url + r.URL.Path);
+	    u = append(u, url + r.URL.String());
 	}
-	// fmt.Println(urls)
+	fmt.Println(urls)
     
-    results := asyncHttpGets(u, resto)
+    results := asyncHttpGets(u)
 
     for _, result := range results {
         if result == nil || result.response == nil {

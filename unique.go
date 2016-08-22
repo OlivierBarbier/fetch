@@ -13,28 +13,28 @@ import (
 )
 
 type uniqueResponse struct {
-    Status  boolean
+    Response  bool
     Url string
 }
 
 func unique (w http.ResponseWriter, r *http.Request) {
-    // fmt.Println(r.URL.String())
-    // fmt.Println(r.URL.Path)
+    fmt.Println(r.URL.String())
+    fmt.Println(r.URL.Path)
 
     r.ParseForm()
 
-    resto := r.Form.Get("r")
+    // resto := r.Form.Get("u")
 
-    combined := []uniqueResponse{}
+    combined := uniqueResponse{true, "*"}
 
     var u []string;
 
 	for _, url := range urls {
-	    u = append(u, url + r.URL.Path);
+	    u = append(u, url + r.URL.String());
 	}
-	// fmt.Println(urls)
+	fmt.Println(urls)
     
-    results := asyncHttpGets(u, resto)
+    results := asyncHttpGets(u)
 
     for _, result := range results {
         if result == nil || result.response == nil {
@@ -48,14 +48,13 @@ func unique (w http.ResponseWriter, r *http.Request) {
         // fmt.Printf("%s status: %s\n", result.url,
         //        result.response.Status)
 
-        var response []uniqueResponse;
+        var response uniqueResponse;
 
-        parseHttpResponse(result, &response);
+        parseHttpUniqueResponse(result, &response);
 
-        for _, res := range response {
-        	res.Url = result.url
-            combined = append(combined, res);
-        }
+        response.Url = result.url
+
+        combined.Response = combined.Response && response.Response;
     }
 
     json, _ := json.Marshal(combined)
@@ -63,7 +62,7 @@ func unique (w http.ResponseWriter, r *http.Request) {
     fmt.Fprint(w, string(json))
 }
 
-func parseHttpResponse(result *HttpResponse, response *[]uniqueResponse) {
+func parseHttpUniqueResponse(result *HttpResponse, response *uniqueResponse) {
     raw_response, _ := ioutil.ReadAll(result.response.Body)
 
     json.Unmarshal(raw_response, response)
