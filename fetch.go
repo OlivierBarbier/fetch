@@ -65,7 +65,7 @@ func asyncHttpGets(urls []string) []*HttpResponse {
 
     for _, url := range urls {
         go func(url string) {
-            // fmt.Printf("Fetching %s \n", url + "?query=" + qs)
+            fmt.Printf("Fetching %s \n", url)
             resp, err := client.Get(url)
             ch <- &HttpResponse{url, resp, err}
             if err != nil && resp != nil && resp.StatusCode == http.StatusOK {
