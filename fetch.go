@@ -69,33 +69,32 @@ func main() {
     r.ParseForm()
     resto := r.Form.Get("r")
 
-	  combined := []Response{}
+    combined := []Response{}
 
-	  results := asyncHttpGets(urls, resto)
+    results := asyncHttpGets(urls, resto)
 
-	  for _, result := range results {
-	      if result != nil && result.response != nil {
-	          
-	          // fmt.Printf("%s status: %s\n", result.url,
-	          //        result.response.Status)
+    for _, result := range results {
+      if result != nil && result.response != nil {
+  
+        // fmt.Printf("%s status: %s\n", result.url,
+        //        result.response.Status)
 
-	          if result.response.Status != "200 OK" {
-			  	continue
-			  }
-	          
-			  var response []Response;
+        if result.response.Status != "200 OK" {
+	  continue
+	}
+  
+	var response []Response;
 
-			  parseHttpResponse(result, &response);
+	parseHttpResponse(result, &response);
 
-		      for _, res := range response {
-		    	combined = append(combined, res);
-			  }
-
-	      }
-	  }
-	  
-	  j, _ := json.Marshal(combined)
-	fmt.Fprint(w, string(j))
+        for _, res := range response {
+    	  combined = append(combined, res);
+        }
+      }
+    }
+    
+    j, _ := json.Marshal(combined)
+    fmt.Fprint(w, string(j))
   })
 
   http.ListenAndServe(":8080", nil)
