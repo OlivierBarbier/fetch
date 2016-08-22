@@ -1,14 +1,12 @@
 package main
 
 import (
-    // "fmt"
+    "encoding/json"
+    "fmt"
     "net/http"
 )
 
-var urls = []string{
-    "http://app1.tillersystems.com/api",
-    "http://app2.tillersystems.com/api",    
-}
+var urls map[string]string
 
 type HttpResponse struct {
     url      string
@@ -17,6 +15,25 @@ type HttpResponse struct {
 }
 
 func main() {
+    urls = map[string]string{
+        "app1": "http://app1.tillersystems.com/api",
+    }
+
+    http.HandleFunc("/urls", func(w http.ResponseWriter, r *http.Request) {
+        defer r.Body.Close() 
+
+        if r.Method == "POST" {
+            r.ParseForm()
+            subDomain := r.FormValue("sub-domain")
+            if "" != subDomain {
+                urls[subDomain] = fmt.Sprintf("http://%s.tillersystems.com/api", subDomain)
+            }
+        }
+        
+        json, _ := json.Marshal(urls)
+        fmt.Fprint(w, string(json))
+    })
+    
     http.HandleFunc("/search", search)
     http.HandleFunc("/user-is-unique", unique)
 
