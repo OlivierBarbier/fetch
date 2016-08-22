@@ -4,6 +4,7 @@ import (
     "encoding/json"
     "fmt"
     "net/http"
+    "github.com/gorilla/mux"
 )
 
 var urls map[string]string
@@ -19,7 +20,9 @@ func main() {
         "app1": "http://app1.tillersystems.com/api",
     }
 
-    http.HandleFunc("/urls", func(w http.ResponseWriter, r *http.Request) {
+    router := mux.NewRouter().StrictSlash(true)
+
+    router.HandleFunc("/urls", func(w http.ResponseWriter, r *http.Request) {
         defer r.Body.Close() 
 
         if r.Method == "POST" {
@@ -29,15 +32,30 @@ func main() {
                 urls[subDomain] = fmt.Sprintf("http://%s.tillersystems.com/api", subDomain)
             }
         }
-        
+       
         json, _ := json.Marshal(urls)
         fmt.Fprint(w, string(json))
     })
     
-    http.HandleFunc("/search", search)
-    http.HandleFunc("/user-is-unique", unique)
+    router.HandleFunc("/urls/{id}", func(w http.ResponseWriter, r *http.Request) {
+        defer r.Body.Close() 
+        vars := mux.Vars(r) 
+        id := vars["id"]
 
-    http.ListenAndServe(":8080", nil)
+        if r.Method == "DELETE" {
+            delete(urls, id)
+        }
+
+        if r.Method == "GET" {
+            json, _ := json.Marshal(urls[id])
+            fmt.Fprint(w, string(json))
+        }        
+    })
+
+    router.HandleFunc("/search", search)
+    router.HandleFunc("/user-is-unique", unique)
+
+    http.ListenAndServe(":8080", router)
 }
 
 func asyncHttpGets(urls []string) []*HttpResponse {
