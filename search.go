@@ -15,6 +15,7 @@ import (
 type searchResponse struct {
     Name  string
     Url string
+    Id int
 }
 
 func search (w http.ResponseWriter, r *http.Request) {
