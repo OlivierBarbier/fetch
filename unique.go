@@ -28,7 +28,7 @@ func unique (w http.ResponseWriter, r *http.Request) {
 
     // resto := r.Form.Get("u")
 
-    combined := uniqueResponse{true, "*"}
+    combined := uniqueResponse{false, "*"}
 
     var u []string;
 
@@ -57,7 +57,7 @@ func unique (w http.ResponseWriter, r *http.Request) {
 
         response.Url = result.url
 fmt.Println(response.Response)
-        combined.Response = combined.Response && response.Response;
+        combined.Response = combined.Response || response.Response;
     }
 
     json, _ := json.Marshal(combined)
