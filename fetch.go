@@ -18,7 +18,7 @@ type HttpResponse struct {
 
 func main() {
     urls = map[string]string{
-        "app1": "http://app1.tillersystems.com/api",
+        "preprod": "http://preprod.tillersystems.com/api/cluster",
     }
 
     router := mux.NewRouter().StrictSlash(true)
@@ -30,7 +30,7 @@ func main() {
             r.ParseForm()
             subDomain := r.FormValue("sub-domain")
             if "" != subDomain {
-                urls[subDomain] = fmt.Sprintf("http://%s.tillersystems.com/api", subDomain)
+                urls[subDomain] = fmt.Sprintf("http://%s.tillersystems.com/api/cluster", subDomain)
             }
         }
        
@@ -53,8 +53,8 @@ func main() {
         }        
     })
 
-    router.HandleFunc("/search", search)
-    router.HandleFunc("/user-is-unique", unique)
+    router.HandleFunc("/restaurants/search", search)
+    router.HandleFunc("/users/exists", unique)
 
     router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { 
         defer r.Body.Close()
