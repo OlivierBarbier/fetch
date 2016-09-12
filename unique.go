@@ -21,8 +21,8 @@ func unique (w http.ResponseWriter, r *http.Request) {
     defer r.Body.Close() 
     w.Header().Set("Access-Control-Allow-Origin", "*")
     
-    fmt.Println(r.URL.String())
-    fmt.Println(r.URL.Path)
+    // fmt.Println(r.URL.String())
+    // fmt.Println(r.URL.Path)
 
     r.ParseForm()
 
@@ -35,7 +35,7 @@ func unique (w http.ResponseWriter, r *http.Request) {
 	for _, url := range urls {
 	    u = append(u, url + r.URL.String());
 	}
-	fmt.Println(urls)
+	// fmt.Println(urls)
     
     results := asyncHttpGets(u)
 
@@ -56,7 +56,7 @@ func unique (w http.ResponseWriter, r *http.Request) {
         parseHttpUniqueResponse(result, &response);
 
         response.Url = result.url
-fmt.Println(response.Response)
+// fmt.Println(response.Response)
         combined.Response = combined.Response || response.Response;
     }
 

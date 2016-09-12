@@ -35,7 +35,7 @@ func search (w http.ResponseWriter, r *http.Request) {
 	for _, url := range urls {
 	    u = append(u, url + r.URL.String());
 	}
-	fmt.Println(urls)
+	// fmt.Println(urls)
     
     results := asyncHttpGets(u)
 

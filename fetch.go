@@ -3,8 +3,9 @@ package main
 import (
     "encoding/json"
     "fmt"
-    "net/http"
     "github.com/gorilla/mux"
+    "net/http"
+    "os"
 )
 
 var urls map[string]string
@@ -67,11 +68,17 @@ func asyncHttpGets(urls []string) []*HttpResponse {
     ch := make(chan *HttpResponse)
     responses := []*HttpResponse{}
     client := http.Client{}
+    
+    token := os.Getenv("TOKEN")
 
     for _, url := range urls {
         go func(url string) {
-            fmt.Printf("Fetching %s \n", url)
-            resp, err := client.Get(url)
+            // fmt.Printf("Fetching %s \n", url)
+            
+            req, _ := http.NewRequest("GET", url, nil)
+            req.Header.Add("token", token)
+            resp, err := client.Do(req)
+
             ch <- &HttpResponse{url, resp, err}
             if err != nil && resp != nil && resp.StatusCode == http.StatusOK {
                 resp.Body.Close()
